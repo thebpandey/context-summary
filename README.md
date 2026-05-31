@@ -108,7 +108,7 @@ Download or copy the raw content of `SKILL.md` from this repository.
 
 Direct link to raw file:
 ```
-https://raw.githubusercontent.com/[YOUR_GITHUB_USERNAME]/context-summary/main/SKILL.md
+https://raw.githubusercontent.com/thebpandey/context-summary/main/SKILL.md
 ```
 
 ### Step 2: Open Claude.ai Settings
@@ -175,7 +175,7 @@ Claude will pause for you to paste. After you paste, say `continue` and it will 
 
 `context-summary` pairs naturally with:
 
-- `session-summary` or `kodetrain-session`: Run those first to generate an archive, then run `context-summary` to generate the lean handoff that points to it.
+- `session-summary` or `session-detail`: Run those first to generate an archive, then run `context-summary` to generate the lean handoff that points to it.
 - Any build or dev workflow: Use at natural session boundaries (end of a story, before switching focus, before a long break).
 
 ---
@@ -197,9 +197,25 @@ The skill enforces this budget through its guardrails. If you find handoffs cons
 These skills are referenced within `context-summary` as the archive layer:
 
 - **session-summary**: Produces a full Context Rescue Package for long or complex sessions. Trigger: `Summarize Session`, `Session end`, `End of session`.
-- **kodetrain-session**: Produces a structured two-section app session log for the KodeTrain companion app. Trigger: `Kode end`, `Kode Summary`, `End Kode Session`.
+- **session-detail**: Produces a structured two-section app session log. Trigger: `session detail`, `detailed session summary`, `session archive`.
 
 Those skills are maintained separately and are not included in this repository.
+
+---
+
+## Community
+
+If you use this skill and it saves you time, open an issue or start a discussion on GitHub. Specific feedback on sections that consistently over-produce or under-produce is useful for future versions.
+
+If you build a related skill (a complementary archive layer, a project-specific variant, a version for non-technical workflows), open a PR or link it in Discussions.
+
+---
+
+## Author
+
+Built by Bhaskar Pandey. Not affiliated with Anthropic.
+
+If you find issues or want to propose changes, use GitHub Issues or pull requests.
 
 ---
 
