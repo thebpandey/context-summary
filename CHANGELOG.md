@@ -4,6 +4,21 @@ All notable changes to this skill are documented here.
 
 ---
 
+## [2.1.0] - 2026-05-31
+
+### Changed
+- **Standalone skill.** Removed all references to other skills. `context-summary` now runs entirely on its own with no companion-skill dependencies. The ARCHIVE POINTER block no longer instructs the user to run any external skill; it either points to the user's own log or states that the handoff is the only record.
+- **Trigger description.** Removed cross-skill disambiguation. The description now defines the skill purely by its own intent signal: carrying work forward into a new conversation versus producing a full archive.
+- **Worked example.** Replaced the example project with a generic multi-tenant SaaS API build so the skill is not tied to any specific product. The example now fully conforms to the v2 output spec (3-5 sentence TASK STATE, five gotchas each with symptom and guard, OPEN QUESTIONS with current assumptions, NEXT STEP with the key locked decision and gotcha embedded inline).
+
+### Fixed
+- **Output-is-markdown-only guardrail.** Added an explicit guardrail with a binary test: the first character of the response must be the first character of the first block header. Prevents preamble or meta-commentary from leaking into the handoff.
+- **Non-git session guidance.** CURRENT HEAD now explicitly handles writing, research, and planning sessions that have no git repo, by substituting equivalent artifact state in the same one-fact-per-line format.
+- **Short-session handling.** Behavior on Invocation now states that a lean handoff for a short session (fewer than ~10 turns) is correct behavior, not a failure, and instructs against padding to meet token targets.
+- **Other infra field.** Clarified that the `Other infra:` line is omit-when-empty and must not be written as `Other infra: None`.
+
+---
+
 ## [2.0.0] - 2026-05-31
 
 ### Changed
@@ -26,5 +41,4 @@ All notable changes to this skill are documented here.
 - Seven-block fixed skeleton: TASK STATE, CURRENT HEAD, DECISIONS LOCKED, ACTIVE GOTCHAS, OPEN QUESTIONS, ARCHIVE POINTER, NEXT STEP.
 - Trigger phrase set: context summary, context-summary, context handoff, handoff summary, give me the handoff, hand this off, carry context forward, prep the handoff.
 - Live git state detection when repo is in context.
-- Distinction from session-summary and kodetrain-session skills.
 - Token budget: 1,500 target, 3,000 hard ceiling.

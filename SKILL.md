@@ -1,14 +1,14 @@
 ---
 name: context-summary
 description: >
-  Produces a lean, paste-ready session handoff so work can continue in a new conversation without re-paying the cost of the full chat. Emits a fixed seven-block skeleton optimized for re-entry, not archival. Trigger this skill whenever the user says any of the following (exact or close paraphrase): "context summary", "context-summary", "context handoff", "handoff summary", "give me the handoff", "hand this off", "carry context forward", "prep the handoff". Always trigger this skill for these phrases. Do not answer them directly without consulting this skill. This skill is distinct from session-summary (a longer rescue package) and kodetrain-session (a two-section app log); when the user explicitly names one of those, defer to it instead. Do not trigger on "session summary" alone without a handoff or continuity intent -- that phrase belongs to session-summary. The signal for this skill is the user wanting to carry work forward into a new conversation, not wanting a record of the current one.
+  Produces a lean, paste-ready session handoff so work can continue in a new conversation without re-paying the cost of the full chat. Emits a fixed seven-block skeleton optimized for re-entry, not archival. Trigger this skill whenever the user says any of the following (exact or close paraphrase): "context summary", "context-summary", "context handoff", "handoff summary", "give me the handoff", "hand this off", "carry context forward", "prep the handoff". Always trigger this skill for these phrases. Do not answer them directly without consulting this skill. The signal for this skill is the user wanting to carry work forward into a new conversation, not wanting a full record of the current one. If the user only wants a complete archive of the session rather than a forward-looking handoff, that is a different need; this skill produces the handoff.
 ---
 
 # Context Summary Skill
 
 ## Role
 
-You are a context handoff specialist. Your single job is to compress the current conversation into the smallest artifact that lets a fresh session resume the work immediately and without error. This is a boarding pass, not an archive. The full record lives elsewhere (a committed session log). Every token here is re-paid on every turn of the new conversation, so the standard is ruthless: if a line does not change what the next session does, it does not belong here.
+You are a context handoff specialist. Your single job is to compress the current conversation into the smallest artifact that lets a fresh session resume the work immediately and without error. This is a boarding pass, not an archive. Every token here is re-paid on every turn of the new conversation, so the standard is ruthless: if a line does not change what the next session does, it does not belong here.
 
 ---
 
@@ -59,7 +59,7 @@ Five to twelve lines. Only traps that can bite the next session specifically. Ea
 Bulleted. Everything genuinely unresolved, still being iterated, or awaiting an external dependency. Each item includes: the question itself, what is currently known or assumed, and a resolve-by marker for when the answer is needed (for example `(resolve before Story 1.3)` or `(resolve before launch)`). If you are unsure whether something was finalized, it goes here, not in DECISIONS LOCKED. Group by domain if there are more than five items.
 
 ### ARCHIVE POINTER
-One to three lines. The primary line points to the full session log: `Full session log: <path>`. Add secondary lines for any other reference documents that were produced or referenced this session and are not in the log (design docs, ADRs, spec files, prompt bodies). If no archive exists yet, write: `No archive committed. Run /session-summary or /kodetrain-session to generate the full log before relying on this handoff long-term.`
+One to three lines. If the user keeps a full session log or archive, point to it: `Full session log: <path>`. Add secondary lines for any other reference documents that were produced or referenced this session and are not in the log (design docs, ADRs, spec files, prompt bodies). If no archive exists, write: `No archive committed. This handoff is the only record; save it somewhere durable if you need the detail later.`
 
 ### NEXT STEP
 A literal, paste-ready prompt the user can drop into the new conversation to resume immediately. Write it as the exact text to paste, inside a fenced code block. It must name the project, the current unit of work, its status, the immediate next action, and any critical constraint or gate the next session must respect. Include a one-line summary of the most important locked decision and the most important active gotcha so the new session has minimum viable context even if this handoff is not attached. It should be self-contained enough that pasting it alone is sufficient to make progress, and pasting it with this full handoff is sufficient to continue with full fidelity.
@@ -70,11 +70,11 @@ A literal, paste-ready prompt the user can drop into the new conversation to res
 
 ```
 ### TASK STATE
-Building KodeTrain, a visual project intelligence platform targeting solo developers who need persistent project intelligence across Claude sessions. Planning phase complete and pushed; Story 1.1 (Next.js scaffold, base layout, route structure) done and pushed. Story 1.2 (AES-256-GCM crypto helpers, server-only, no client exposure) is next in queue. Goal is a working MVP by end of sprint 3; Story 1.2 is on the critical path because all secret storage depends on it.
+Building a multi-tenant SaaS API in Next.js for a B2B workflow automation tool targeting small operations teams. Planning phase complete and pushed; Story 1.1 (Next.js scaffold, base layout, route structure) done and pushed. Story 1.2 (AES-256-GCM credential encryption helpers, server-only, no client exposure) is next in queue. Goal is a working MVP by end of sprint 3; Story 1.2 is on the critical path because all stored credentials depend on it.
 
 ### CURRENT HEAD
 Branch: main (primary integration branch, no feature branches in use for MVP)
-Commit: 9fc9a9b security and config fixes after Story 1.1 review
+Commit: 4bc7e2a security and config fixes after Story 1.1 review
 Working tree: clean
 Pushed: yes
 Supabase: project not yet created; needed at Story 1.3 for auth and row-level security setup
@@ -82,10 +82,10 @@ Vercel: Hobby plan, pointed at repo; no deploy until Story 1.3 env vars are wire
 Env: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY not yet set; placeholders in .env.example only
 
 ### DECISIONS LOCKED
-**Product:** BYOK model; users supply their own API keys, platform never stores them server-side (do not weaken, this is the core trust proposition). Free tier = 3 projects, unlimited everything else; paid tier and Stripe deferred to V2.
-**Architecture:** Result<T> error wrapper at all external API boundaries; overrides ECC try/catch pattern (do not weaken, silent swallowed errors are the failure mode we are preventing). Atomic commits via GitHub Git Data API, not Contents API; Contents API does not support atomic multi-file writes.
+**Product:** BYOK model; users supply their own API keys, platform never stores them server-side (do not weaken, this is the core trust proposition). Free tier = 3 active workflows, unlimited everything else; paid tier and Stripe deferred to V2.
+**Architecture:** Result<T> error wrapper at all external API boundaries; overrides generic try/catch pattern (do not weaken, silent swallowed errors are the failure mode we are preventing). Atomic commits via GitHub Git Data API, not Contents API; Contents API does not support atomic multi-file writes.
 **Tooling:** Tailwind 3.4.19 locked for MVP; do not upgrade to Tailwind 4 (breaking config changes, not worth mid-sprint migration).
-**Security:** Crypto helpers are server-only; no crypto logic may be imported into any client component.
+**Security:** Encryption helpers are server-only; no crypto logic may be imported into any client component.
 
 ### ACTIVE GOTCHAS
 - sync_baseline_sha (used during push) and latest_context_commit_sha (used during conflict detection) are NOT interchangeable; symptom is silent conflict resolution failure that looks like a successful push; guard is always source the SHA from the correct operation context.
@@ -96,19 +96,19 @@ Env: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY not yet set; placeho
 
 ### OPEN QUESTIONS
 - Supabase project not yet created; currently assumed to be a fresh project with no existing schema; needed before Story 1.3 RLS setup can begin (resolve before Story 1.3).
-- deferred-work.md contains 9 inherited starter template issues; currently assumed to be non-blocking for MVP functionality but unaudited; need a pass to confirm none affect crypto or auth (resolve before external launch).
+- Legacy data migration scope not yet defined; currently assumed out of scope for MVP; needs a decision before Story 1.4 data layer work begins (resolve before Story 1.4).
 
 ### ARCHIVE POINTER
-Full session log: _bmad-output/sessions/2026-05-31-SESSION-01.md
+Full session log: _output/sessions/2026-05-31-SESSION-01.md
 
 ### NEXT STEP
 ```
-Continuing KodeTrain. Story 1.1 (scaffold) is done and pushed. Story 1.2 (AES-256-GCM crypto helpers, server-only) is next.
+Continuing the B2B workflow automation API. Story 1.1 (scaffold) is done and pushed. Story 1.2 (AES-256-GCM credential encryption helpers, server-only) is next.
 
-Key locked decision: crypto helpers are server-only, no client imports permitted.
+Key locked decision: encryption helpers are server-only, no client imports permitted.
 Key gotcha: AES-256-GCM requires a fresh IV generated inside every encrypt call; IV reuse is silent and cryptographically broken.
 
-Run bmad-dev-story for Story 1.2 with manual gates enabled. This is foundational; all secret storage depends on it. Full attention required before proceeding to Story 1.3.
+Begin Story 1.2 with manual review gates enabled. This is foundational; all stored credentials depend on it. Full attention required before proceeding to Story 1.3.
 ```
 ```
 

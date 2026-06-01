@@ -16,7 +16,6 @@ A Claude.ai Personal Skill that generates a structured, seven-block session hand
 - [Usage](#usage)
 - [Examples](#examples)
 - [Token Budget](#token-budget)
-- [Related Skills](#related-skills)
 - [Community](#community)
 - [Author](#author)
 - [License](#license)
@@ -108,7 +107,7 @@ Any of the following (exact or close paraphrase) invokes the skill:
 - `carry context forward`
 - `prep the handoff`
 
-**Note:** `session summary` alone does not trigger this skill. That phrase belongs to the companion `session-summary` skill, which produces a longer archive-style document. The signal for `context-summary` is the intent to carry work forward into a new conversation, not to record the current one.
+**Note:** The signal for this skill is the intent to carry work forward into a new conversation, not to produce a full archive of the current one. If you want a complete record of everything that happened in a session, that is a different need; this skill produces a lean forward-looking handoff, not an archive.
 
 ---
 
@@ -160,8 +159,6 @@ Claude should respond with the seven-block handoff structure immediately, withou
 **Claude asks me to paste the conversation:** The skill is designed to read the current conversation directly. If Claude asks you to paste, the skill may not have loaded correctly. Re-check that the full skill file content was saved.
 
 **Output is too short or missing blocks:** Confirm you installed the v2.1 file (token ceiling 5,000) rather than the original (ceiling 3,000). The version in this repo is v2.1.
-
-**Claude generates a session archive instead of a handoff:** You may have said `session summary` instead of `context summary`. The two are different skills with different outputs.
 
 ---
 
@@ -277,7 +274,7 @@ Tools: Google Docs (primary), Perplexity (research), Claude (drafting and struct
 - BLM contact for factual review not yet identified; currently assumed the guide will carry a standard disclaimer rather than an expert endorsement (resolve before external publication).
 
 ### ARCHIVE POINTER
-No archive committed. Run /session-summary to generate the full session log before relying on this handoff long-term.
+No archive committed. This handoff is the only record; save it somewhere durable if you need the detail later.
 Reference documents: /references/BLM-appraisal-2024.pdf, /references/source-list.md
 
 ### NEXT STEP
@@ -305,21 +302,11 @@ The skill enforces this budget through its guardrails. If you find handoffs cons
 
 ---
 
-## Related Skills
-
-`context-summary` is part of a family of session management skills. The companion skill referenced in the ARCHIVE POINTER block is:
-
-- **session-summary**: Produces a full Context Rescue Package for long or complex sessions. Use this first to generate a complete archive, then run `context-summary` to generate the lean handoff that points to it. Trigger: `Summarize Session`, `Session end`, `End of session`.
-
-That skill is maintained separately and is not included in this repository.
-
----
-
 ## Community
 
 If you use this skill and it saves you time, open an issue or start a discussion on GitHub. Specific feedback on sections that consistently over-produce or under-produce is useful for future versions.
 
-If you build a related skill (a complementary archive layer, a project-specific variant, a version for a domain not covered here), open a PR or link it in Discussions.
+If you fork or adapt this skill for a workflow it does not currently cover (a different infrastructure stack, a domain-specific variant, a non-technical adaptation), open a PR or link your version in Discussions.
 
 ---
 
