@@ -328,3 +328,31 @@ If you find issues or want to propose changes, GitHub Issues and pull requests a
 ## License
 
 MIT. Use freely, modify for your workflow, share with attribution.
+
+---
+
+## Claude Code
+
+A Claude Code command version of this skill is available in the `claude-code/` directory of this repo.
+
+### Installation
+
+1. Create the Claude Code commands directory if it does not exist:
+
+```bash
+mkdir -p ~/.claude/commands
+```
+
+2. Copy the command file:
+
+```bash
+cp claude-code/context-summary.md ~/.claude/commands/context-summary.md
+```
+
+3. Restart any active Claude Code session. The command will appear in autocomplete when you type `/`.
+
+### Usage
+/context-summary
+
+Claude Code will pull live git state, generate the handoff, write it to `_sessions/` in your current repo, and ask whether you want the output displayed in chat. Default is no display; press Enter to skip.
+
