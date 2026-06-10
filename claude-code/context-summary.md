@@ -18,7 +18,26 @@ If the session is fewer than roughly 10 turns and has no accumulated decisions o
 
 If the working directory has no git repo, fill CURRENT HEAD from what the session established and mark any value you could not verify as `[unverified]`.
 
-Output is **markdown only**, clean and copy-paste ready. No preamble above the blocks, no meta-commentary, no closing text outside the seven blocks. The first character of the response must be the first character of the first block header.
+---
+
+## Output Behavior
+
+**CRITICAL: Do not print the handoff content to chat under any circumstances until the user explicitly requests it in step 6.**
+
+1. Generate the full handoff content in memory only. Do not print it to chat.
+2. Determine the output filename using the format `YYYY-MM-DD-HH-MM-context-summary.md`, derived from the timestamp of the first message in the session. If the timestamp is not determinable, use today's date and `0000` for the time component.
+3. Create the `_sessions/` directory in the current working directory if it does not already exist, using `mkdir -p _sessions`.
+4. Write the full handoff content to `_sessions/YYYY-MM-DD-HH-MM-context-summary.md` using bash file-write tools.
+5. Print exactly one line to chat -- nothing else:
+   `Written to: _sessions/YYYY-MM-DD-HH-MM-context-summary.md`
+   If the write fails, print exactly one line:
+   `Error: [description of what failed]`
+   Do not print anything else regardless of success or failure.
+6. Then ask in chat: `Display output in chat? (y/N):` and wait for the user's reply.
+   - If the user replies `y` or `Y`, print the full handoff content to chat.
+   - If the user replies `n`, `N`, or presses enter with no input, do nothing further. Do not print anything.
+
+Handoff content is **markdown only**, clean and copy-paste ready. No preamble above the blocks, no meta-commentary, no closing text outside the seven blocks.
 
 ---
 
