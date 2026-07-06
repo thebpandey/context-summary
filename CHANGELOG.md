@@ -4,6 +4,21 @@ All notable changes to this skill are documented here.
 
 ---
 
+## [2.2.0] - 2026-07-06
+
+### Changed
+- **NEXT STEP is now a three-line pointer, not a self-contained briefing.** It names the project and unit of work, states the next action, and defers to the handoff as authoritative. The old form duplicated TASK STATE, a locked decision, and a gotcha into the pointer; that redundancy was re-paid on every turn of the new conversation. The handoff travels with the pointer, so the pointer no longer needs to survive alone.
+- **Length budget replaces token budget.** Line counts are self-checkable during generation; token counts are not. Target is roughly 40 content lines, hard ceiling 80. The old 3,000/5,000 token figures survive in the README as rough equivalents for intuition.
+- **Empty blocks are omitted, with a ledger line.** Instead of printing `None this session.` under empty headers, empty blocks are dropped and named in a single first line: `Blocks empty this session: <names>`. Deliberate omission stays distinguishable from oversight at lower carried cost.
+- **CURRENT HEAD infra fields genericized.** `Supabase:` and `Vercel:` labels are now `Backend service:` and `Deploy target:` with Supabase, Vercel, and peers as examples, so the skill is not hardcoded to one stack.
+- **Claude Code command filenames now carry the `code-` tool prefix** (`code-YYYY-MM-DD-HH-MM-context-summary.md`), matching the naming convention used across companion tooling in the same `_sessions/` directory.
+
+### Fixed
+- **Standalone violation in the Claude Code command.** The ARCHIVE POINTER fallback text referenced an external slash command; it now matches the skill's self-contained wording.
+- **Nested code-fence bug in the SKILL.md worked example.** The example's outer fence now uses four backticks so the NEXT STEP inner fence renders correctly on GitHub.
+
+---
+
 ## [2.1.0] - 2026-05-31
 
 ### Changed

@@ -15,7 +15,7 @@ A Claude.ai Personal Skill that generates a structured, seven-block session hand
 - [Installation](#installation)
 - [Usage](#usage)
 - [Examples](#examples)
-- [Token Budget](#token-budget)
+- [Length Budget](#length-budget)
 - [Community](#community)
 - [Author](#author)
 - [License](#license)
@@ -88,9 +88,9 @@ The output is markdown only. No preamble. No pleasantries. No meta-commentary. J
 | `ACTIVE GOTCHAS` | 5-12 traps that can bite the next session, each with its symptom and guard. |
 | `OPEN QUESTIONS` | Unresolved items, each with current assumption and a resolve-by marker. |
 | `ARCHIVE POINTER` | Path to the full session log for anything not carried in the handoff. |
-| `NEXT STEP` | A paste-ready prompt to drop into the new conversation to resume immediately. |
+| `NEXT STEP` | A three-line resume pointer: project and unit of work, next action, and a line deferring to the handoff as authoritative. |
 
-Every block is always present. If a block has no content, it reads `None this session.` so the new session never wonders if a block was accidentally omitted.
+Empty blocks are omitted. When any block is omitted, the first line of the handoff is a ledger: `Blocks empty this session: <names>`. The new session knows the omission was deliberate, and you never pay for empty headers on every future turn.
 
 ---
 
@@ -158,7 +158,7 @@ Claude should respond with the seven-block handoff structure immediately, withou
 
 **Claude asks me to paste the conversation:** The skill is designed to read the current conversation directly. If Claude asks you to paste, the skill may not have loaded correctly. Re-check that the full skill file content was saved.
 
-**Output is too short or missing blocks:** Confirm you installed the v2.1 file (token ceiling 5,000) rather than the original (ceiling 3,000). The version in this repo is v2.1.
+**Output is missing blocks:** As of v2.2, empty blocks are omitted by design and listed in the `Blocks empty this session:` ledger line at the top of the handoff. A block absent from both the output and the ledger indicates an installation problem; confirm the full SKILL.md was pasted, frontmatter included. The version in this repo is v2.2.
 
 ---
 
@@ -186,7 +186,7 @@ Claude will pause for you to paste. After you paste, say `continue` and it will 
 
 ### Short Sessions
 
-For sessions under roughly 10 turns with no accumulated decisions or gotchas, the skill produces a lean handoff: a brief TASK STATE and `None this session.` in the remaining blocks. This is correct behavior. Do not expect a padded output for a short session.
+For sessions under roughly 10 turns with no accumulated decisions or gotchas, the skill produces a lean handoff: a brief TASK STATE, the populated blocks only, and a ledger line naming the omitted empty blocks. This is correct behavior. Do not expect a padded output for a short session.
 
 ---
 
@@ -205,8 +205,8 @@ Branch: main (primary integration branch, no feature branches in use for MVP)
 Commit: 4bc7e2a security and config fixes after Story 1.1 review
 Working tree: clean
 Pushed: yes
-Supabase: project not yet created; needed at Story 1.3 for auth and row-level security setup
-Vercel: Hobby plan, pointed at repo; no deploy until Story 1.3 env vars are wired
+Backend service: Supabase; project not yet created; needed at Story 1.3 for auth and row-level security setup
+Deploy target: Vercel Hobby, pointed at repo; no deploy until Story 1.3 env vars are wired
 Env: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY not yet set; placeholders in .env.example only
 
 ### DECISIONS LOCKED
@@ -231,12 +231,9 @@ Full session log: _output/sessions/2026-05-31-SESSION-01.md
 
 ### NEXT STEP
 ```
-Continuing the B2B workflow automation API. Story 1.1 (scaffold) is done and pushed. Story 1.2 (AES-256-GCM credential encryption helpers, server-only) is next.
-
-Key locked decision: encryption helpers are server-only, no client imports permitted.
-Key gotcha: AES-256-GCM requires a fresh IV generated inside every encrypt call; IV reuse is silent and cryptographically broken.
-
-Begin Story 1.2 with manual review gates enabled. This is foundational; all stored credentials depend on it. Full attention required before proceeding to Story 1.3.
+Continuing the B2B workflow automation API; resuming Story 1.2 (AES-256-GCM credential encryption helpers, server-only).
+Begin Story 1.2 with manual review gates enabled.
+The attached handoff is authoritative; read it before acting.
 ```
 ```
 
@@ -279,24 +276,23 @@ Reference documents: /references/BLM-appraisal-2024.pdf, /references/source-list
 
 ### NEXT STEP
 ```
-Continuing the Land Exchange Agreements practitioner's guide. Chapters 1-3 are complete and reviewed. Chapter 4 (environmental compliance and title risk) is next.
-
-Key locked decision: federal land exchanges only, no state or private exchanges; scope is fixed.
-Key gotcha: all regulatory citations must reference federal sources (NEPA, BLM standards); state equivalents are incorrect for this guide.
-
-Begin Chapter 4 using the approved outline. Hold cross-references to the Ch. 3 comparable sales table until editor confirms whether it moves to an appendix. Target under 2,000 words for this chapter.
+Continuing the Land Exchange Agreements practitioner's guide; resuming Chapter 4 (environmental compliance and title risk).
+Begin Chapter 4 using the approved outline.
+The attached handoff is authoritative; read it before acting.
 ```
 ```
 
 ---
 
-## Token Budget
+## Length Budget
+
+The skill enforces line counts, not token counts. Models cannot meter their own tokens mid-generation, so a token ceiling is unenforceable; a line count is self-checkable while writing. The old token figures survive here as rough equivalents for intuition only.
 
 | Threshold | Meaning |
 |---|---|
-| Under 3,000 tokens | Target. Typical session handoff. |
-| 3,000 to 5,000 tokens | Acceptable for high-density sessions (many decisions, complex infra, or large decision set). |
-| Above 5,000 tokens | Archive material has leaked into the handoff. Cut it. |
+| Around 40 content lines | Target. Typical session handoff (roughly the old 3,000-token target). |
+| 40 to 80 lines | Acceptable for high-density sessions (many decisions, complex infra, or large decision set). |
+| Above 80 lines | Archive material has leaked into the handoff. Cut it. |
 
 The skill enforces this budget through its guardrails. If you find handoffs consistently hitting the ceiling, the session likely has content that belongs in the archive behind the ARCHIVE POINTER rather than in the handoff itself.
 

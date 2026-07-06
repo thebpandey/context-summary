@@ -8,7 +8,7 @@ Do not ask the user to paste the conversation. You already have it in context. U
 
 One exception: if the user says they have context from another session to add, pause and let them paste it before generating the handoff.
 
-If the session is fewer than roughly 10 turns and has no accumulated decisions or gotchas, note this briefly in TASK STATE and keep all remaining blocks at `None this session.` Do not pad blocks to meet token targets. A short handoff for a short session is correct behavior, not a failure.
+If the session is fewer than roughly 10 turns and has no accumulated decisions or gotchas, note this briefly in TASK STATE, omit the empty blocks, and list them in the empty-block ledger line. Do not pad blocks to meet length targets. A short handoff for a short session is correct behavior, not a failure.
 
 **Pull live git state for the CURRENT HEAD block** using bash tools. Run:
 - `git branch --show-current` for branch name
@@ -43,9 +43,11 @@ Handoff content is **markdown only**, clean and copy-paste ready. No preamble ab
 
 ## Output Format
 
-Produce these seven blocks, in this order, every time. Use the exact headers below. If a block has no content for this session, keep the header and write `None this session.` rather than deleting it (a missing block reads as an oversight in the new session).
+Produce the blocks below, in this order, using the exact headers. If a block has no content for this session, omit the block entirely and account for it in the ledger line described next.
 
-Target total length: 3,000 tokens for a typical session. Hard ceiling 5,000 tokens. If you are approaching the ceiling, you are putting archive material in a handoff. Cut it and rely on the ARCHIVE POINTER.
+**Empty-block ledger:** If any block is omitted as empty, the first line of the handoff (before TASK STATE) is a single line: `Blocks empty this session: <comma-separated block names>`. If all seven blocks have content, omit the ledger line.
+
+Target total length: roughly 40 content lines for a typical session. Hard ceiling 80 lines. Count your lines during generation. If you are approaching the ceiling, you are putting archive material in a handoff. Cut it and rely on the ARCHIVE POINTER.
 
 ### TASK STATE
 Three to five sentences. What is the work, its purpose, and exactly where it stands right now. Name the current unit of work (story, ticket, feature, milestone) and its status. Include the immediate prior step completed and the immediate next step queued. If the project has a named goal or deadline, include it.
@@ -56,8 +58,8 @@ A structured set of state lines, one fact per line. Include only what applies:
 - `Commit:` latest commit SHA (short) and one-line message
 - `Working tree:` clean, or dirty with a description of what is uncommitted and why it is not yet committed
 - `Pushed:` whether HEAD is pushed to remote, and if not, why
-- `Supabase:` project name, status, and any pending migration state
-- `Vercel:` plan, deploy target, and current deploy status (live, pending, broken)
+- `Backend service:` name, project status, and any pending migration or schema state (for example Supabase, Firebase, PlanetScale)
+- `Deploy target:` platform, plan, and current deploy status: live, pending, or broken (for example Vercel, Netlify, Fly)
 - `Env:` any credential, environment variable, or secrets wiring state that is incomplete or fragile
 - `Other infra:` any additional infrastructure relevant to the next session (DNS, external APIs, third-party services, feature flags). Omit this line entirely if no additional infra applies; do not write `Other infra: None`.
 
@@ -78,19 +80,19 @@ Bulleted. Everything genuinely unresolved, still being iterated, or awaiting an 
 One to three lines. The primary line points to the full session log: `Full session log: <path>`. Add secondary lines for any other reference documents that were produced or referenced this session and are not in the log (design docs, ADRs, spec files, prompt bodies). If no archive exists yet, write: `No archive committed. This handoff is the only record; save it somewhere durable if you need the detail later.`
 
 ### NEXT STEP
-A literal, paste-ready prompt the user can drop into the new session to resume immediately. Write it as the exact text to paste, inside a fenced code block. It must name the project, the current unit of work, its status, the immediate next action, and any critical constraint or gate the next session must respect. Include a one-line summary of the most important locked decision and the most important active gotcha so the new session has minimum viable context even if this handoff is not attached. It should be self-contained enough that pasting it alone is sufficient to make progress, and pasting it with this full handoff is sufficient to continue with full fidelity.
+Three lines maximum, inside a fenced code block, written as the exact text to paste into the new session. Line 1: name the project and the unit of work being resumed. Line 2: the immediate next action. Line 3: `The attached handoff is authoritative; read it before acting.` Do not restate decisions, gotchas, or task state here; they are already in the blocks above and repeating them is paid on every future turn.
 
 ---
 
 ## Guardrails
 
 - **This is a handoff, not an archive.** Do not carry issue root-causes, full prompt bodies, or complete file lists. Those live behind the ARCHIVE POINTER.
-- **Token budget is 3,000 target, 5,000 hard ceiling.** Above 5,000 means archive material has leaked into the handoff. Cut and rely on the ARCHIVE POINTER.
-- **Keep all seven blocks.** A missing block reads as an oversight. Use `None this session.` when empty.
+- **Length budget is roughly 40 content lines, hard ceiling 80.** Above 80 means archive material has leaked into the handoff. Cut and rely on the ARCHIVE POINTER. Count lines during generation; line counts are self-checkable, token counts are not.
+- **Omit empty blocks, account for them in the ledger.** If any block is empty, the first line of the handoff is `Blocks empty this session: <names>`. If all blocks have content, no ledger line. Never pad an empty block to avoid the ledger.
 - **Verify CURRENT HEAD using bash tools.** Never state a commit SHA or clean/dirty status you have not confirmed by running the commands above. Mark unverifiable values `[unverified]`.
 - **ACTIVE GOTCHAS is next-session-relevant only.** A gotcha that cannot recur in the next phase of work belongs in the archive, not here. Include the symptom so the next session can recognize a failure if the gotcha is ignored.
 - **DECISIONS LOCKED must be complete.** A decision omitted here is a decision at risk of being undone silently. When in doubt, include it and flag the domain.
 - **If uncertain whether a decision was finalized,** put it in OPEN QUESTIONS with a resolve-by marker, not in DECISIONS LOCKED.
-- **NEXT STEP must be paste-ready and self-contained.** Not a description of what to do next, but the exact text to paste. It must work even if the reader has not read the rest of this handoff.
+- **NEXT STEP is a three-line pointer, not a briefing.** It names the project and unit of work, states the next action, and defers to the handoff as authoritative. Do not duplicate decisions or gotchas into it.
 - **Style:** no em dashes (use commas, periods, or parentheses). No emojis. No pleasantries or meta-commentary above or below the blocks.
 - **Do not invent state.** If the session does not establish a fact, omit it or mark it unverified. A confident wrong handoff is worse than an honest gap.
