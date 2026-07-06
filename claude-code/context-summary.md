@@ -25,11 +25,11 @@ If the working directory has no git repo, fill CURRENT HEAD from what the sessio
 **CRITICAL: Do not print the handoff content to chat under any circumstances until the user explicitly requests it in step 6.**
 
 1. Generate the full handoff content in memory only. Do not print it to chat.
-2. Determine the output filename using the format `YYYY-MM-DD-HH-MM-context-summary.md`, derived from the timestamp of the first message in the session. If the timestamp is not determinable, use today's date and `0000` for the time component.
+2. Determine the output filename using the format `code-YYYY-MM-DD-HH-MM-context-summary.md`, derived from the timestamp of the first message in the session. If the timestamp is not determinable, use today's date and `0000` for the time component.
 3. Create the `_sessions/` directory in the current working directory if it does not already exist, using `mkdir -p _sessions`.
-4. Write the full handoff content to `_sessions/YYYY-MM-DD-HH-MM-context-summary.md` using bash file-write tools.
+4. Write the full handoff content to `_sessions/code-YYYY-MM-DD-HH-MM-context-summary.md` using bash file-write tools.
 5. Print exactly one line to chat -- nothing else:
-   `Written to: _sessions/YYYY-MM-DD-HH-MM-context-summary.md`
+   `Written to: _sessions/code-YYYY-MM-DD-HH-MM-context-summary.md`
    If the write fails, print exactly one line:
    `Error: [description of what failed]`
    Do not print anything else regardless of success or failure.
@@ -75,7 +75,7 @@ Five to twelve lines. Only traps that can bite the next session specifically. Ea
 Bulleted. Everything genuinely unresolved, still being iterated, or awaiting an external dependency. Each item includes: the question itself, what is currently known or assumed, and a resolve-by marker for when the answer is needed (for example `(resolve before Story 1.3)` or `(resolve before launch)`). If you are unsure whether something was finalized, it goes here, not in DECISIONS LOCKED. Group by domain if there are more than five items.
 
 ### ARCHIVE POINTER
-One to three lines. The primary line points to the full session log: `Full session log: <path>`. Add secondary lines for any other reference documents that were produced or referenced this session and are not in the log (design docs, ADRs, spec files, prompt bodies). If no archive exists yet, write: `No archive committed. Run /session-detail to generate the full log before relying on this handoff long-term.`
+One to three lines. The primary line points to the full session log: `Full session log: <path>`. Add secondary lines for any other reference documents that were produced or referenced this session and are not in the log (design docs, ADRs, spec files, prompt bodies). If no archive exists yet, write: `No archive committed. This handoff is the only record; save it somewhere durable if you need the detail later.`
 
 ### NEXT STEP
 A literal, paste-ready prompt the user can drop into the new session to resume immediately. Write it as the exact text to paste, inside a fenced code block. It must name the project, the current unit of work, its status, the immediate next action, and any critical constraint or gate the next session must respect. Include a one-line summary of the most important locked decision and the most important active gotcha so the new session has minimum viable context even if this handoff is not attached. It should be self-contained enough that pasting it alone is sufficient to make progress, and pasting it with this full handoff is sufficient to continue with full fidelity.

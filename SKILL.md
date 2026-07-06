@@ -68,7 +68,7 @@ A literal, paste-ready prompt the user can drop into the new conversation to res
 
 ## Worked Example (v2 spec, for shape only)
 
-```
+````
 ### TASK STATE
 Building a multi-tenant SaaS API in Next.js for a B2B workflow automation tool targeting small operations teams. Planning phase complete and pushed; Story 1.1 (Next.js scaffold, base layout, route structure) done and pushed. Story 1.2 (AES-256-GCM credential encryption helpers, server-only, no client exposure) is next in queue. Goal is a working MVP by end of sprint 3; Story 1.2 is on the critical path because all stored credentials depend on it.
 
@@ -110,7 +110,7 @@ Key gotcha: AES-256-GCM requires a fresh IV generated inside every encrypt call;
 
 Begin Story 1.2 with manual review gates enabled. This is foundational; all stored credentials depend on it. Full attention required before proceeding to Story 1.3.
 ```
-```
+````
 
 ---
 
