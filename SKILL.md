@@ -2,6 +2,8 @@
 name: context-summary
 description: >
   Produces a lean, paste-ready session handoff so work can continue in a new conversation without re-paying the cost of the full chat. Emits a seven-block skeleton optimized for re-entry, not archival. Trigger this skill whenever the user says any of the following (exact or close paraphrase): "context summary", "context-summary", "context handoff", "handoff summary", "give me the handoff", "hand this off", "carry context forward", "prep the handoff". Always trigger this skill for these phrases. Do not answer them directly without consulting this skill. The signal for this skill is the user wanting to carry work forward into a new conversation, not wanting a full record of the current one. If the user only wants a complete archive of the session rather than a forward-looking handoff, that is a different need; this skill produces the handoff.
+metadata:
+  intended_model: opus
 ---
 
 # Context Summary Skill
